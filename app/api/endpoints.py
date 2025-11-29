@@ -11,11 +11,16 @@ ingestion_service = IngestionService() # Note: In a real app, this should be a b
 @router.post("/ingest", response_model=Dict[str, str])
 async def trigger_ingestion():
     """
-    Triggers a single mock ingestion cycle.
+    Triggers a real ingestion cycle from RSS feeds.
     """
-    article_create = ingestion_service.generate_mock_article()
-    article = ingestion_service.process_article(article_create)
-    return {"message": f"Ingested article: {article.title}", "id": article.id}
+    # In a real app, this should trigger a background task
+    articles = ingestion_service.fetch_from_feeds()
+    count = 0
+    for article_create in articles:
+        ingestion_service.process_article(article_create)
+        count += 1
+        
+    return {"message": f"Ingested {count} articles from RSS feeds", "id": "batch"}
 
 @router.get("/query")
 async def query_news(q: str):

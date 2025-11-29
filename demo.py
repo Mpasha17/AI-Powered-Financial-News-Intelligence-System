@@ -14,18 +14,17 @@ def run_demo():
     print_header("Starting Financial News Intelligence Demo")
     
     # 1. Ingest Data
-    print("Step 1: Ingesting Mock Data...")
-    for i in range(5):
-        try:
-            response = requests.post(f"{BASE_URL}/ingest")
-            if response.status_code == 200:
-                print(f"  - {response.json()['message']}")
-            else:
-                print(f"  - Error: {response.text}")
-        except Exception as e:
-            print(f"  - Failed to connect to API. Is it running? Error: {e}")
-            return
-        time.sleep(0.5)
+    print("Step 1: Triggering Real RSS Ingestion...")
+    try:
+        response = requests.post(f"{BASE_URL}/ingest")
+        if response.status_code == 200:
+            print(f"  - {response.json()['message']}")
+        else:
+            print(f"  - Error: {response.text}")
+    except Exception as e:
+        print(f"  - Failed to connect to API. Is it running? Error: {e}")
+        return
+    time.sleep(2) # Wait for processing
         
     # 2. Check Stats
     print("\nStep 2: Checking System Stats...")
