@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+langgraph
+langchain
+langchain-community
+langchain-core
+chromadb
+sentence-transformers
+spacy
+pydantic
+requests
+python-dotenv
+beautifulsoup4
+feedparser
+numpy
