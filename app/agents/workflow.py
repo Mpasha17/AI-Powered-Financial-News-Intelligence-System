@@ -30,6 +30,10 @@ def extraction_node(state: AgentState):
 def storage_node(state: AgentState):
     article = state['article']
     save_article_to_sqlite(article.model_dump())
+    
+    # Add to ChromaDB (now that extraction is done and sector is available)
+    dedup_agent.add_to_chroma(article)
+    
     print(f"Stored article: {article.id}")
     return {"article": article}
 

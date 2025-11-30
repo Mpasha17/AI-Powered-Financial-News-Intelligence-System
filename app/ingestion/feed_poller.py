@@ -21,11 +21,13 @@ class IngestionService:
 
     def fetch_from_feeds(self) -> List[ArticleCreate]:
         articles = []
+        with open("ingestion.log", "a") as f:
+            f.write("Starting fetch_from_feeds...\n")
         for url in RSS_FEEDS:
             try:
                 print(f"Fetching from {url}...")
                 feed = feedparser.parse(url)
-                for entry in feed.entries[:5]: # Limit to 5 per feed for demo speed
+                for entry in feed.entries[:5]: # Limit to 5 per feed for better coverage
                     # Basic parsing
                     title = entry.get('title', 'No Title')
                     link = entry.get('link', '')
@@ -69,6 +71,8 @@ class IngestionService:
         return articles
 
     def process_article(self, article_create: ArticleCreate) -> Article:
+        with open("ingestion.log", "a") as f:
+            f.write(f"Processing article: {article_create.title}\n")
         # Create initial Article object with stable ID
         # We use the URL hash as the ID to prevent duplicates on re-ingestion
         import hashlib
@@ -94,6 +98,8 @@ class IngestionService:
         try:
             while self.running:
                 articles = self.fetch_from_feeds()
+                with open("ingestion.log", "a") as f:
+                    f.write(f"Fetched {len(articles)} articles. Processing...\n")
                 print(f"Fetched {len(articles)} articles. Processing...")
                 for art in articles:
                     self.process_article(art)

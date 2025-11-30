@@ -14,6 +14,7 @@ class ImpactType(str, Enum):
     DIRECT = "direct"
     SECTOR = "sector"
     REGULATORY = "regulatory"
+    INDIRECT = "indirect"
 
 class Entity(BaseModel):
     name: str
@@ -23,22 +24,22 @@ class ImpactedStock(BaseModel):
     symbol: str
     confidence: float
     type: ImpactType
+    sentiment: str = "NEUTRAL" # POSITIVE, NEGATIVE, NEUTRAL
+    impact_score: int = 0 # -100 to 100
+    reasoning: str = ""
 
 class Article(BaseModel):
-    id: str = Field(..., description="Unique ID of the article")
+    id: str
     title: str
     content: str
     source: str
     published_at: datetime
-    url: Optional[str] = None
-    
-    # Metadata
+    url: str
     entities: List[Entity] = []
     impacted_stocks: List[ImpactedStock] = []
-    
-    # Deduplication
     is_duplicate: bool = False
     duplicate_of_id: Optional[str] = None
+    sector: str = "General" # Banking, IT, Energy, etc.
     
     # Embedding (optional to store here, usually in Vector DB)
     embedding_id: Optional[str] = None

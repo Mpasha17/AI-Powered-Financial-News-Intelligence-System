@@ -3,7 +3,7 @@ import time
 import sys
 import json
 
-BASE_URL = "http://localhost:8000/api"
+BASE_URL = "http://localhost:8001/api"
 
 def print_header(text):
     print("\n" + "="*50)

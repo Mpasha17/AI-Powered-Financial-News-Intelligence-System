@@ -30,7 +30,8 @@ def get_sqlite_conn():
                     is_duplicate BOOLEAN DEFAULT 0,
                     duplicate_of_id TEXT,
                     entities_json TEXT,
-                    impacted_stocks_json TEXT
+                    impacted_stocks_json TEXT,
+                    sector TEXT
                 )
             """)
             conn.commit()
@@ -55,7 +56,8 @@ def init_sqlite():
             is_duplicate BOOLEAN DEFAULT 0,
             duplicate_of_id TEXT,
             entities_json TEXT,
-            impacted_stocks_json TEXT
+            impacted_stocks_json TEXT,
+            sector TEXT
         )
     """)
     conn.commit()
@@ -96,8 +98,8 @@ def save_article_to_sqlite(article: Dict[str, Any]):
     impacted_stocks_json = json.dumps(article.get('impacted_stocks', []))
     
     cursor.execute('''
-    INSERT OR REPLACE INTO articles (id, title, content, source, published_at, url, is_duplicate, duplicate_of_id, entities_json, impacted_stocks_json)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT OR REPLACE INTO articles (id, title, content, source, published_at, url, is_duplicate, duplicate_of_id, entities_json, impacted_stocks_json, sector)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         article['id'],
         article['title'],
@@ -108,7 +110,8 @@ def save_article_to_sqlite(article: Dict[str, Any]):
         article.get('is_duplicate', False),
         article.get('duplicate_of_id'),
         entities_json,
-        impacted_stocks_json
+        impacted_stocks_json,
+        article.get('sector', 'General')
     ))
     
     conn.commit()

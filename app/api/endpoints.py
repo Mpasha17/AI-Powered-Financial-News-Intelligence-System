@@ -14,6 +14,7 @@ async def trigger_ingestion():
     Triggers a real ingestion cycle from RSS feeds.
     """
     # In a real app, this should trigger a background task
+    print("DEBUG: /ingest endpoint hit")
     articles = ingestion_service.fetch_from_feeds()
     count = 0
     for article_create in articles:

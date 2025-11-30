@@ -48,14 +48,22 @@ class DeduplicationAgent:
         article.is_duplicate = is_duplicate
         article.duplicate_of_id = duplicate_of_id
         
-        if not is_duplicate:
-            # Add to Vector DB
-            self.collection.add(
-                documents=[text_to_embed],
-                metadatas=[{"title": article.title, "source": article.source}],
-                ids=[article.id],
-                embeddings=[embedding]
-            )
-            print(f"New unique article added: {article.title}")
-            
         return article
+
+    def add_to_chroma(self, article: Article):
+        """
+        Adds the article to ChromaDB with full metadata.
+        """
+        if article.is_duplicate:
+            return
+
+        text_to_embed = f"{article.title} {article.content}"
+        embedding = self.model.encode(text_to_embed).tolist()
+        
+        self.collection.add(
+            documents=[text_to_embed],
+            metadatas=[{"title": article.title, "source": article.source, "sector": article.sector}],
+            ids=[article.id],
+            embeddings=[embedding]
+        )
+        print(f"Added to ChromaDB: {article.title} (Sector: {article.sector})")
